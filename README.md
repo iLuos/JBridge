@@ -4,6 +4,12 @@
 
 第一版提供 CLI 和客户端配置生成，不包含自制 Windows GUI 或 Web 管理面板。Xray 负责协议及加密，ncloud 负责部署和维护。连接效果仍需在实际网络中测试。
 
+## 共享客户端配置
+
+仓库提供可直接连接现有节点的[客户端配置文件](profiles/ncloud-client.yaml)。在文件页面下载原始文件后，Windows 和 macOS 用户可在 [Clash Verge Rev](https://github.com/clash-verge-rev/clash-verge-rev/releases/latest) 中导入并选中，使用“规则”模式、选择“日本 VPS”，安装客户端服务并开启 TUN。
+
+该文件包含有效的共享节点访问凭据，公开文件的任何持有人都可以使用对应 VPS。所有使用者共用带宽、流量和同一组凭据；更换节点或撤销共享凭据后，需要同步更新此文件。服务端私钥和 SSH 私钥不在该配置中。
+
 ## 环境
 
 - 目标系统：Alibaba Cloud Linux 3、运行 systemd、root/sudo；其他 systemd Linux 需要自行验收。
@@ -141,4 +147,4 @@ python tools/verify_vps.py --profile exports/ncloud-client.yaml --mihomo work/mi
 
 该检查使用完整 DNS/分流规则，在临时目录运行独立客户端，验证规则下载、国外 HTTPS 出口 IP、国内域名直连、DNS 查询和日本 IP 归属；不会启用 TUN 或改动系统路由。IP 归属依赖第三方数据库，不能替代云平台的实例地域信息。
 
-不要提交 `work/`、导出文件、真实状态、私钥、SSH 凭据、日志或下载的核心。MIT 许可仅适用于本项目；Xray 和 Mihomo 使用各自上游许可。
+`profiles/ncloud-client.yaml` 是公开分发的共享配置。其他导出文件、`work/`、真实状态、私钥、SSH 凭据、日志和下载的核心应保留在本机。MIT 许可仅适用于本项目；Xray 和 Mihomo 使用各自上游许可。

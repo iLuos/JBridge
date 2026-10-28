@@ -1,0 +1,127 @@
+{
+  "mixed-port": 7897,
+  "allow-lan": false,
+  "bind-address": "127.0.0.1",
+  "mode": "rule",
+  "log-level": "info",
+  "ipv6": true,
+  "find-process-mode": "strict",
+  "profile": {
+    "store-selected": true
+  },
+  "tun": {
+    "enable": true,
+    "stack": "mixed",
+    "auto-route": true,
+    "strict-route": true,
+    "auto-detect-interface": true,
+    "dns-hijack": [
+      "any:53",
+      "tcp://any:53"
+    ]
+  },
+  "dns": {
+    "enable": true,
+    "listen": "127.0.0.1:1053",
+    "ipv6": true,
+    "use-system-hosts": false,
+    "enhanced-mode": "fake-ip",
+    "fake-ip-range": "198.18.0.1/16",
+    "fake-ip-filter": [
+      "*.lan",
+      "*.local",
+      "localhost",
+      "+.home.arpa"
+    ],
+    "default-nameserver": [
+      "223.5.5.5",
+      "119.29.29.29"
+    ],
+    "proxy-server-nameserver": [
+      "https://dns.alidns.com/dns-query"
+    ],
+    "direct-nameserver": [
+      "https://dns.alidns.com/dns-query"
+    ],
+    "nameserver": [
+      "https://cloudflare-dns.com/dns-query#日本节点"
+    ],
+    "nameserver-policy": {
+      "rule-set:cn-domain": [
+        "https://dns.alidns.com/dns-query"
+      ]
+    }
+  },
+  "proxies": [
+    {
+      "name": "日本 VPS",
+      "type": "vless",
+      "server": "8.211.135.129",
+      "port": 443,
+      "uuid": "0f6a7e3c-e6e5-49be-b98a-26b4974688e0",
+      "network": "tcp",
+      "udp": true,
+      "tls": true,
+      "flow": "xtls-rprx-vision",
+      "servername": "www.cloudflare.com",
+      "client-fingerprint": "chrome",
+      "packet-encoding": "xudp",
+      "reality-opts": {
+        "public-key": "4FramovvM89l4y8XsQNFMvemmOp2g1uPDTcqWI6YhEA",
+        "short-id": "e47767c5c385f739",
+        "support-x25519mlkem768": true
+      }
+    }
+  ],
+  "proxy-groups": [
+    {
+      "name": "日本节点",
+      "type": "select",
+      "proxies": [
+        "日本 VPS"
+      ]
+    }
+  ],
+  "rule-providers": {
+    "cn-domain": {
+      "type": "http",
+      "behavior": "domain",
+      "format": "mrs",
+      "interval": 86400,
+      "path": "./ruleset/cn-domain.mrs",
+      "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs",
+      "proxy": "日本节点"
+    },
+    "cn-ip": {
+      "type": "http",
+      "behavior": "ipcidr",
+      "format": "mrs",
+      "interval": 86400,
+      "path": "./ruleset/cn-ip.mrs",
+      "url": "https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geoip/cn.mrs",
+      "proxy": "日本节点"
+    }
+  },
+  "rules": [
+    "DOMAIN,localhost,DIRECT",
+    "DOMAIN-SUFFIX,lan,DIRECT",
+    "DOMAIN-SUFFIX,local,DIRECT",
+    "DOMAIN-SUFFIX,home.arpa,DIRECT",
+    "IP-CIDR,0.0.0.0/8,DIRECT,no-resolve",
+    "IP-CIDR,10.0.0.0/8,DIRECT,no-resolve",
+    "IP-CIDR,100.64.0.0/10,DIRECT,no-resolve",
+    "IP-CIDR,127.0.0.0/8,DIRECT,no-resolve",
+    "IP-CIDR,169.254.0.0/16,DIRECT,no-resolve",
+    "IP-CIDR,172.16.0.0/12,DIRECT,no-resolve",
+    "IP-CIDR,192.168.0.0/16,DIRECT,no-resolve",
+    "IP-CIDR,224.0.0.0/4,DIRECT,no-resolve",
+    "IP-CIDR6,::/128,DIRECT,no-resolve",
+    "IP-CIDR6,::1/128,DIRECT,no-resolve",
+    "IP-CIDR6,fc00::/7,DIRECT,no-resolve",
+    "IP-CIDR6,fe80::/10,DIRECT,no-resolve",
+    "IP-CIDR6,ff00::/8,DIRECT,no-resolve",
+    "RULE-SET,cn-domain,DIRECT",
+    "RULE-SET,cn-ip,DIRECT,no-resolve",
+    "MATCH,日本节点"
+  ]
+}
