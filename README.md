@@ -72,6 +72,8 @@ sudo ncloud init --server YOUR_PUBLIC_IPV4 --open-firewall
 
 DNS：国内域名用阿里 DoH，其他查询用经日本节点的 Cloudflare DoH；TUN 劫持普通 53 端口 DNS。浏览器或应用自带 DoH、代理排除项、客户端全局覆写需要另行验证。默认开启 IPv6，必须确认客户端实际接管 IPv6；无法接管时可临时关闭对应网卡 IPv6，记住恢复原设置。
 
+导出的 DNS 配置忽略 Windows 系统 hosts，防止其中的回环地址映射被当作远端地址交给 VPS；不会修改系统 hosts 文件。需要自定义解析时，应在客户端配置中显式维护。服务端使用 VLESS 中的原始目的地址进行私网拦截，关闭额外的入站域名嗅探，避免公开 SNI 掩盖原始私网地址。
+
 这套配置没有系统级“断网保护”：日本节点不可用且 TUN 仍运行时，走节点的连接应失败；退出客户端或停用 TUN 后，系统可能恢复直连。
 
 ## 管理命令
@@ -130,5 +132,13 @@ python tools/verify_cores.py --xray work/xray/xray.exe --mihomo work/mihomo/miho
 ```
 
 联调使用临时生成的身份，在回环地址启动服务端和客户端，通过 HTTP CONNECT 检查 HTTPS 请求，并测试错误凭据不能连接。测试不安装系统服务，不启用 TUN、不修改 Windows 路由。它不能替代 Alibaba Cloud Linux 上的 systemd/SELinux 验收或真实日本出口测试。
+
+部署后可对实际导出的私密配置进行端到端验收：
+
+```powershell
+python tools/verify_vps.py --profile exports/ncloud-client.yaml --mihomo work/mihomo/mihomo.exe
+```
+
+该检查使用完整 DNS/分流规则，在临时目录运行独立客户端，验证规则下载、国外 HTTPS 出口 IP、国内域名直连、DNS 查询和日本 IP 归属；不会启用 TUN 或改动系统路由。IP 归属依赖第三方数据库，不能替代云平台的实例地域信息。
 
 不要提交 `work/`、导出文件、真实状态、私钥、SSH 凭据、日志或下载的核心。MIT 许可仅适用于本项目；Xray 和 Mihomo 使用各自上游许可。

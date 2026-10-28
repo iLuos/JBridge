@@ -15,6 +15,9 @@ class ConfigTests(unittest.TestCase):
         self.assertEqual(inbound["streamSettings"]["realitySettings"]["target"], "www.microsoft.com:443")
         self.assertEqual(config["routing"]["rules"][0]["outboundTag"], "block")
         self.assertIn("169.254.0.0/16", config["routing"]["rules"][0]["ip"])
+        # Routing must see the requested destination, not a sniffed public SNI
+        # which could conceal an originally private destination address.
+        self.assertNotIn("sniffing", inbound)
 
     def test_client_never_contains_private_key(self):
         value = state()
@@ -37,6 +40,7 @@ class ConfigTests(unittest.TestCase):
         self.assertTrue(config["ipv6"])
         self.assertIn("#日本节点", config["dns"]["nameserver"][0])
         self.assertIn("rule-set:cn-domain", config["dns"]["nameserver-policy"])
+        self.assertFalse(config["dns"]["use-system-hosts"])
 
     def test_reject_bad_input(self):
         for value in (0, 65536, -1, "1;rm", "1.5", True, None):

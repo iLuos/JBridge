@@ -108,7 +108,6 @@ def server_config(state):
                     "privateKey": state["private_key"], "shortIds": [state["short_id"]],
                 },
             },
-            "sniffing": {"enabled": True, "destOverride": ["http", "tls", "quic"], "routeOnly": True},
         }],
         "outbounds": [{"protocol": "freedom", "tag": "direct"}, {"protocol": "blackhole", "tag": "block"}],
         "routing": {"domainStrategy": "IPOnDemand", "rules": [
@@ -137,6 +136,7 @@ def client_config(state):
                 "dns-hijack": ["any:53", "tcp://any:53"]},
         "dns": {
             "enable": True, "listen": "127.0.0.1:1053", "ipv6": True,
+            "use-system-hosts": False,
             "enhanced-mode": "fake-ip", "fake-ip-range": "198.18.0.1/16",
             "fake-ip-filter": ["*.lan", "*.local", "localhost", "+.home.arpa"],
             "default-nameserver": ["223.5.5.5", "119.29.29.29"],
