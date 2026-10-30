@@ -57,7 +57,7 @@
       "name": "日本 VPS",
       "type": "vless",
       "server": "8.211.135.129",
-      "port": 443,
+      "port": 8443,
       "uuid": "0f6a7e3c-e6e5-49be-b98a-26b4974688e0",
       "network": "tcp",
       "udp": true,

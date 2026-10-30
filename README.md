@@ -8,6 +8,8 @@
 
 仓库提供可直接连接现有节点的[客户端配置文件](profiles/ncloud-client.yaml)。在文件页面下载原始文件后，Windows 和 macOS 用户可在 [Clash Verge Rev](https://github.com/clash-verge-rev/clash-verge-rev/releases/latest) 中导入并选中，使用“规则”模式、选择“日本 VPS”，安装客户端服务并开启 TUN。
 
+现有共享节点使用 **TCP 8443**。此前导入 443 端口配置的用户，需要重新下载并导入此文件，或手动将“日本 VPS”节点端口改为 `8443`。
+
 该文件包含有效的共享节点访问凭据，公开文件的任何持有人都可以使用对应 VPS。所有使用者共用带宽、流量和同一组凭据；更换节点或撤销共享凭据后，需要同步更新此文件。服务端私钥和 SSH 私钥不在该配置中。
 
 ## 环境
